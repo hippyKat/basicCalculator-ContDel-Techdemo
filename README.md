@@ -32,69 +32,118 @@ The main objective is to apply CD practices by automating key processes, ensurin
 ### Prerequisites
 Ensure the following software and tools are installed:
 - **Git**: Version control.
-- **Java JDK / Python / Node.js**: Depending on the tech stack used in your project.
-- **Docker** (optional): For containerized deployments.
+- **Java JDK**: For building and running the Java application.
+- **Docker**: For containerized deployments.
+- **Terraform**: For infrastructure management.
 
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/continuous-delivery-techdemo.git
+   git clone https://github.com/hippyKat/basicCalculator-ContDel-Techdemo
    ```
 2. Navigate to the project directory:
    ```bash
-   cd continuous-delivery-techdemo
+   cd basicCalculator-ContDel-Techdemo
    ```
 3. Install dependencies:
-   - For Node.js:
-     ```bash
-     npm install
-     ```
-   - For Python:
-     ```bash
-     pip install -r requirements.txt
-     ```
    - For Java:
      ```bash
      mvn install
      ```
 
+
 ## Usage
 1. **Build the project**: 
    - Java: `mvn clean install`
-   - Python: `python setup.py build`
-   - JavaScript: `npm run build`
 
 2. **Run the tests**:
-   - Execute unit and integration tests to verify the functionality.
+   - Execute unit tests to verify the functionality.
+   
+   ````bash
+   mvn test
+   ```
 
 3. **Deploy the project**: The deployment is automated through the provided scripts or configured CI/CD pipeline.
 
 ## Tech Stack
-- **Primary Language**: Java, Python, JavaScript (choose based on your project).
-- **Build Tools**: Maven, Pip, NPM.
-- **Testing Frameworks**: JUnit, pytest, Jest.
-- **CI/CD**: Jenkins, GitHub Actions.
+**Primary Language**: Java
+**Build Tools**: Maven
+**Testing Frameworks**: JUnit
+**CI/CD**: GitHub Actions
+**Containerization**: Docker
+**Infrastructure Management**: Terraform
 
 ## Testing
 To ensure high-quality code, testing is integrated throughout the development process. You can run the following test suites:
 1. **Unit Tests**: Validating individual components.
-2. **Integration Tests**: Ensuring modules work together.
-3. **End-to-End Tests**: Testing complete workflows.
-   ```bash
-   npm test
+   ````bash
+   mvn test
    ```
 
 ## Continuous Delivery Workflow
 The following CD practices are integrated into this project:
-- **Automated Builds**: Triggered on every commit.
-- **Automated Tests**: Running unit, integration, and e2e tests.
-- **Continuous Deployment**: Deployments to a staging environment with approval steps for production deployment.
+- **Automated Builds**: Triggered on every push to `main` using GitHub Actions.
+- **Automated Tests**: Triggered on every push to `main` using GitHub Actions.
+- **Continuous Deployment**: Deployments to a Docker container using Terraform.
 
-## Contributing
-We welcome contributions. Please follow the **TODO** [contributing guidelines](./CONTRIBUTING.md) for submitting issues and pull requests.
+## CI/CD Pipeline
+The CI/CD pipeline is defined in the ci.yml file. It includes steps for checking out the repository, setting up the Java environment, building the project, running tests, and deploying the Docker container.
 
-## License
-This project is licensed under the MIT License. See the **TODO** [LICENSE](./LICENSE.md) file for details.
+## Security Checks
+Security checks are integrated into the pipeline using the security.yml file. It includes steps for running OWASP Dependency Check and Trivy vulnerability scanner.
+
 
 ## Contact
-For any inquiries or issues, please reach out to [michael.ulm@fh-joanneum.at](mailto:michael.ulm@fh-joanneum.at).
+For any inquiries or issues, please reach out to [michael.ulm@fh-joanneum.at](mailto:daniel.zarnhofer@fh-joanneum.at).
+
+
+### Additional Documentation
+
+#### Environment Setup
+
+The project uses environment variables for configuration. These variables can be set in a `.env` file. A template is provided in `.env.template`.
+
+```plaintext
+CALCULATOR_API_KEY=xx-xx-xx-xx-xx
+VALIDATION_ENDPOINT=https://xxx
+```
+
+## Configuration Management
+The project uses a configuration file `calculator.properties` to set the precision of the calculator. A template is provided in `calculator.properties.template`.
+
+   ```
+   # config/calculator.properties
+   calculator.precision=2
+   ```
+
+## Infrastructure Management
+The infrastructure is managed using Terraform. The Terraform configuration files are located in the `terraform` directory. The main configuration file is `main.tf`, which defines the Docker image and container resources.
+
+````tf
+# terraform/main.tf
+
+# Build and manage the Docker image
+resource "docker_image" "calculator" {
+  name = "calculator:latest"
+  build {
+    context    = "${path.module}/.."  # This points to the parent directory
+    dockerfile = "${path.module}/../Dockerfile"
+    no_cache   = true  # Added to avoid cache issues
+  }
+}
+
+# Create and run the container
+resource "docker_container" "calculator_container" {
+  name  = "calculator-container"
+  image = docker_image.calculator.image_id
+  
+  ports {
+    internal = 8080
+    external = 8080
+  }
+}
+````
+
+
+
+
