@@ -18,17 +18,20 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      # Add this step to explicitly set JAVA_HOME
       - name: Set JAVA_HOME
         run: |
           echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
           echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
 
-      # Alternative approach using Maven plugin instead of Action
+      # Add Maven build step before Docker build
+      - name: Build with Maven
+        run: mvn clean package
+
       - name: Run OWASP Dependency Check
         run: |
           mvn org.owasp:dependency-check-maven:check
 
+      # Now Docker build will find the JAR file
       - name: Build Docker image
         run: docker build -t calculator:latest -f terraform/Dockerfile .
 
