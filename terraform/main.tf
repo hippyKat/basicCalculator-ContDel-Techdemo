@@ -8,13 +8,7 @@ resource "docker_image" "calculator" {
   }
 }
 
-# Create and run the container
 resource "docker_container" "calculator_container" {
   name  = "calculator-container"
   image = docker_image.calculator.image_id
-  
-  ports {
-    internal = 8080
-    external = 8080
-  }
 }

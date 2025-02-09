@@ -9,26 +9,28 @@ public class CalculatorTest {
 
     @Test
     void testAdd() {
-        assertEquals(4, calculator.add(2, 2));
+        assertEquals(4, calculator.add(2, 2), "2 + 2 should equal 4");
     }
 
     @Test
     void testSubtract() {
-        assertEquals(2, calculator.subtract(4, 2));
+        assertEquals(2, calculator.subtract(4, 2), "4 - 2 should equal 2");
     }
 
     @Test
     void testMultiply() {
-        assertEquals(6, calculator.multiply(2, 3));
+        assertEquals(6, calculator.multiply(2, 3), "2 * 3 should equal 6");
     }
 
     @Test
     void testDivide() {
-        assertEquals(2.0, calculator.divide(4, 2));
+        assertEquals(2.0, calculator.divide(4, 2), "4 / 2 should equal 2.0");
     }
 
     @Test
     void testDivideByZero() {
-        assertThrows(IllegalArgumentException.class, () -> calculator.divide(1, 0));
+        assertThrows(IllegalArgumentException.class, 
+            () -> calculator.divide(1, 0), 
+            "Dividing by zero should throw IllegalArgumentException");
     }
 }
