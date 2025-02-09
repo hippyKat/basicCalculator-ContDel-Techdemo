@@ -40,6 +40,7 @@
                 <artifactId>dependency-check-maven</artifactId>
                 <version>8.4.0</version>
                 <configuration>
+                    <cveStartYear>2021</cveStartYear>
                     <format>HTML</format>
                     <failBuildOnCVSS>7</failBuildOnCVSS>
                 </configuration>
