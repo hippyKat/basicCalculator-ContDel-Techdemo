@@ -1,0 +1,4 @@
+# config/calculator.properties
+# Set the precision of the calculator 
+# and create calculator.properties file in this config folder
+calculator.precision=x
