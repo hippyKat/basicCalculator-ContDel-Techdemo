@@ -1,13 +1,16 @@
+# Build and manage the Docker image
 resource "docker_image" "calculator" {
-  name = "${var.app_name}:latest"
+  name = "calculator:latest"
   build {
-    context = ".."
-    dockerfile = "../Dockerfile"
+    context    = "D:/Allgemein/Studium/Semester_5/Cont_Del/ContDel-Calculator/basicCalculator-ContDel-Techdemo"    
+    dockerfile = "terraform/Dockerfile" # Points to Dockerfile
+    no_cache   = true
   }
 }
 
+# Create and run the container
 resource "docker_container" "calculator_container" {
-  name  = "${var.app_name}-container"
+  name  = "calculator-container"
   image = docker_image.calculator.image_id
   
   ports {

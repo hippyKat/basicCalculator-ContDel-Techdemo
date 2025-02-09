@@ -1,5 +1,5 @@
 variable "app_name" {
-  description = "Name of the application"
+  description = "Basic Calculator"
   type        = string
   default     = "calculator"
 }
