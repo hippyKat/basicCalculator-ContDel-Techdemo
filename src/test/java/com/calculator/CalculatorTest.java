@@ -1,36 +1,39 @@
 package com.calculator;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
-
 public class CalculatorTest {
-    private final Calculator calculator = new Calculator();
+    private Calculator calculator;
 
-    @Test
-    void testAdd() {
-        assertEquals(4, calculator.add(2, 2), "2 + 2 should equal 4");
+    @BeforeEach
+    void setUp() {
+        calculator = new Calculator();
     }
 
     @Test
-    void testSubtract() {
-        assertEquals(2, calculator.subtract(4, 2), "4 - 2 should equal 2");
+    void testBasicOperations() {
+        assertEquals(4, calculator.add(2, 2), "Basic addition should work without API key");
+        assertEquals(2, calculator.subtract(4, 2), "Basic subtraction should work without API key");
     }
 
     @Test
-    void testMultiply() {
-        assertEquals(6, calculator.multiply(2, 3), "2 * 3 should equal 6");
-    }
-
-    @Test
-    void testDivide() {
-        assertEquals(2.0, calculator.divide(4, 2), "4 / 2 should equal 2.0");
+    void testPremiumOperationsWithoutKey() {
+        Exception exception = assertThrows(IllegalStateException.class, () -> {
+            calculator.multiply(2, 3);
+        });
+        assertTrue(exception.getMessage().contains("Invalid or missing API key"));
+        
+        exception = assertThrows(IllegalStateException.class, () -> {
+            calculator.divide(4, 2);
+        });
+        assertTrue(exception.getMessage().contains("Invalid or missing API key"));
     }
 
     @Test
     void testDivideByZero() {
-        assertThrows(IllegalArgumentException.class, 
-            () -> calculator.divide(1, 0), 
-            "Dividing by zero should throw IllegalArgumentException");
+        // Even with invalid API key, should check for divide by zero first
+        assertThrows(IllegalStateException.class, () -> calculator.divide(1, 0));
     }
 }

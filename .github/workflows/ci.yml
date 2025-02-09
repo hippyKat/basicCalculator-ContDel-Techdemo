@@ -1,23 +1,25 @@
 name: Java CI/CD Pipeline
 
-# Defines when the workflow runs
 on:
   push:
-    branches: [ main ]  # Runs on pushes to main branch
+    branches: [ main ]
   pull_request:
-    branches: [ main ]  # Runs on PRs targeting main branch
-  workflow_dispatch:    # Allows manual trigger from GitHub UI
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     
+    # Add environment variables for secrets
+    env:
+      CALCULATOR_API_KEY: ${{ secrets.CALCULATOR_API_KEY }}
+      VALIDATION_ENDPOINT: ${{ secrets.VALIDATION_ENDPOINT }}
+   
     steps:
-    # Step 1: Check out the repository code
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Step 2: Set up Java environment
     - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
@@ -25,16 +27,12 @@ jobs:
         distribution: 'adopt'
         cache: 'maven'
 
-    # Step 2.5: Verify Java version
     - name: Verify Java version
       run: java -version
-  
-    # Step 2.6: Check Maven Java version
+ 
     - name: Verify Maven Java version
       run: mvn -version
-  
-
-    # Step 3: Cache Maven packages
+ 
     - name: Cache Maven packages
       uses: actions/cache@v3
       with:
@@ -42,19 +40,29 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
-    # Step 4: Build the project
+    # Add step to verify secrets are available (optional, for debugging)
+    - name: Verify Secrets
+      run: |
+        if [ -n "$CALCULATOR_API_KEY" ]; then
+          echo "API key is set"
+        else
+          echo "API key is not set"
+        fi
+        if [ -n "$VALIDATION_ENDPOINT" ]; then
+          echo "Validation endpoint is set"
+        else
+          echo "Validation endpoint is not set"
+        fi
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    # Step 5: Run tests
     - name: Run tests
       run: mvn test
 
-    # Step 6: Generate test report
     - name: Generate test report
       run: mvn surefire-report:report
-      
-    # Step 7: Upload test results
+     
     - name: Upload test results
       uses: actions/upload-artifact@v4
       with:
