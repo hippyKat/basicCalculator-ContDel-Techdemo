@@ -173,3 +173,5 @@ For inquiries or issues, please reach out to [daniel.zarnhofer@fh-joanneum.at](m
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+Nachbesprächung done
